@@ -152,6 +152,7 @@ import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.ActivityIntentHelper;
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.DejankUtils;
+import com.android.systemui.keyguard.KeyguardSliceProvider;
 import com.android.systemui.DemoMode;
 import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
@@ -2103,6 +2104,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PULSE_ON_NEW_TRACKS),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2114,6 +2118,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 stockTileStyle();
                 updateTileStyle();
                 mQSPanel.getHost().reloadAllTiles();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.PULSE_ON_NEW_TRACKS))) {
+                setPulseOnNewTracks();
             }
         }
 
@@ -2126,6 +2132,14 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void setStatusDoubleTapToSleep() {
         if (mNotificationShadeWindowViewController != null) {
             mNotificationShadeWindowViewController.updateSettings();
+        }
+    }
+
+    private void setPulseOnNewTracks() {
+        if (KeyguardSliceProvider.getAttachedInstance() != null) {
+            KeyguardSliceProvider.getAttachedInstance().setPulseOnNewTracks(Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.PULSE_ON_NEW_TRACKS, 1,
+                    UserHandle.USER_CURRENT) == 1);
         }
     }
 
