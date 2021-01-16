@@ -58,4 +58,6 @@
     <dimen name="qs_header_image_top_margin">4dp</dimen>
     <dimen name="qs_header_image_bottom_margin">4dp</dimen>
 
+    <!-- Ambient music -->
+    <dimen name="keyguard_security_fod_view_margin">140dp</dimen>
 </resources>
